@@ -1,0 +1,7 @@
+langchain-chroma
+langchain_ollama
+llama-index-core 
+llama-parse 
+llama-index-readers-file 
+python-dotenv
+langchain-text-splitters

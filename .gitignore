@@ -1,0 +1,6 @@
+books
+.env
+dataset
+parsed_books 
+parsed_chunked
+venv
