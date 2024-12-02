@@ -5,3 +5,4 @@ llama-parse
 llama-index-readers-file 
 python-dotenv
 langchain-text-splitters
+langchain_google_community
