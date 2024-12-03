@@ -42,9 +42,8 @@ prompt = ChatPromptTemplate.from_messages(
             "system",
             "You are a Nepalese historian with extensive knowledge of Nepal's history. "
             "You should only answer questions related to Nepal's history and provide only historical information. "
-            "Do not respond to non-historical queries."
-            "If you don't know the answerjust say I don't know this answer."
-            "If some gives you non historical queries just say I don't know.",
+            "If you don't know the answer, just say 'I don't know this answer.' "
+            "If a query is non-historical, say 'I don't know' and do not attempt to search for it online.",
         ),
         ("user", "{input}"),
         MessagesPlaceholder(variable_name = "agent_scratchpad"),
