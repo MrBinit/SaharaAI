@@ -24,7 +24,7 @@ search = GoogleSearchAPIWrapper(google_api_key=google_api_key, google_cse_id = g
 tools = [
     Tool(
     name = "google_search",
-    description= "search about Nepal's History",
+    description= "search about Nepal's History. If the query is non-Historical tell I don't know and don't search in the Internet",
     func = search.run,
     )
 ]
@@ -36,20 +36,15 @@ llm = ChatOllama(
 )
 memory = ChatMessageHistory(session_id = "test-session")
 
-# @tool
-# def get_word_length(word: str) -> int:
-#     """
-#     This tool returns the length of a given word.
-#     """
-#     return len(word)
-
-# tools = [get_word_length]
-
 prompt = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            "You are an Nepalese Historian who known detail history of Nepal.",
+            "You are a Nepalese historian with extensive knowledge of Nepal's history. "
+            "You should only answer questions related to Nepal's history and provide only historical information. "
+            "Do not respond to non-historical queries."
+            "If you don't know the answerjust say I don't know this answer."
+            "If some gives you non historical queries just say I don't know.",
         ),
         ("user", "{input}"),
         MessagesPlaceholder(variable_name = "agent_scratchpad"),
@@ -82,7 +77,7 @@ agent_with_chat_history = RunnableWithMessageHistory(
     history_messages_key = "chat_history"
 
 )
-result = agent_with_chat_history.invoke({"input" :"Who is Prithvi Narayan Shah? "},
+result = agent_with_chat_history.invoke({"input" :" Who are the first prime minister and president of USA?  "},
                                         config={"configurable": {"session_id": "test-session"}},
 
                                         )
