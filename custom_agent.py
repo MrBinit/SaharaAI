@@ -11,6 +11,7 @@ from langchain.agents.output_parsers.openai_tools import OpenAIToolsAgentOutputP
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_google_community import GoogleSearchAPIWrapper
 from langchain_experimental.graph_transformers import LLMGraphTransformer
+from hybrid import retrieve_documents_from_qdrant
 
 from dotenv import load_dotenv
 import os
@@ -19,19 +20,27 @@ load_dotenv()
 
 google_api_key = os.getenv("Google_API_key")
 google_cse_id = os.getenv("GOOGLE_CSE_ID")
-# google wrapper
 
 def graph_transformer_tool(text):
     graph_transformer = LLMGraphTransformer()
     graph = graph_transformer.transforme(text)
     return graph
+def qdrant_retriever(query:str):
+    docs_with_score = retrieve_documents_from_qdrant(query)
+    return docs_with_score
 
+# google wrapper
 search = GoogleSearchAPIWrapper(google_api_key=google_api_key, google_cse_id = google_cse_id, k = 10)
 tools = [
     Tool(
     name = "google_search",
-    description= "search about Nepal's History. If the query is non-Historical tell I don't know and don't search in the Internet",
+    description= "Search about Nepal's History. If the query is non-Historical tell I don't know and don't search in the Internet",
     func = search.run,
+    ),
+    Tool(
+        name = "qdrant_retriever",
+        description= "Retrieves relevant historical documents from Qdrant vector store for a given query.",
+        func=qdrant_retriever,
     ),
     Tool(
         name = "graph transformer",
