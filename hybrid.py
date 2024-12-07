@@ -19,6 +19,12 @@ try:
 except Exception as e:
     print(f"Error while loading sparse embeddings: {e}")
 
+try:
+    embedding_model = OllamaEmbeddings(model = "mxbai-embed-large")
+    print("Embedding model initialized successfully.")
+except Exception as e:
+    print(f"Error initializing the embedding model: {e}")
+    exit(1)
 
 client = QdrantClient(url=qdrant_url, api_key=qdrant_api_key)
 
@@ -37,71 +43,52 @@ def read_documents(chunked_folder_path):
         print(f"Error reading documents from folder: {e}")
     return docs
 
+def add_document_to_qdrant(docs, collection_name = "History_Nepal"):
+    try:
+        client.delete_collection(collection_name=collection_name)
+        print("Deleted existing Qdrant collection: History_Nepal")
+        client.create_collection(
+            collection_name= "History_Nepal",
+            vectors_config=VectorParams(size = 1024, distance = Distance.COSINE)
+        )
+        print("Qdrant collection recreated successfully with 1024 dimensions.")
+
+        qdrant = QdrantVectorStore.from_documents(
+            documents= docs,
+            embedding=embedding_model,
+            sparse_embedding=sparse_embedding,  
+            sparse_vector_name = "sparse-vector",
+            url=qdrant_url,  
+            prefer_grpc=True,
+            api_key=qdrant_api_key,
+            force_recreate= True,
+            collection_name="History_Nepal",
+            retrieval_mode=RetrievalMode.HYBRID,
+        )
+        print("Added documents to Qdrant")
+    except Exception as e:
+        print(f"Error while populating data into Qdrant: {e}")
+
+def retrieve_documents_from_qdrant(query, k=2, collection_name="History_Nepal"):
+    vector_store = QdrantVectorStore(
+    client = client,
+    collection_name=collection_name,
+    embedding= embedding_model
+    )
+    docs_with_score = vector_store.similarity_search(query, k=2)
+    results = []
+    for doc in docs_with_score:
+        result = {
+            "content": doc.page_content,
+            "score": doc.metadata.get("score", "No score available")
+        }
+        results.append(result)
+    return results
+
 docs = read_documents(chunked_folder_path)
-# print(docs[0].page_content)
+
 if not docs:
     print("No documents were loaded. Exiting the process.")
     exit(1)
 
-try:
-    embedding_model = OllamaEmbeddings(model = "mxbai-embed-large")
-    print("Embedding model initialized successfully.")
-except Exception as e:
-    print(f"Error initializing the embedding model: {e}")
-    exit(1)
-try:
-    client.delete_collection(collection_name="History_Nepal")
-    print("Deleted existing Qdrant collection: History_Nepal")
-except Exception as e:
-    print(f"Error deleting existing Qdrant collection: {e}")
-
-
-try:
-    client.create_collection(
-        collection_name= "History_Nepal",
-        vectors_config=VectorParams(size = 1024, distance = Distance.COSINE)
-    )
-    print("Qdrant collection recreated successfully with 1024 dimensions.")
-except Exception as e:
-    print(f"Error creating Qdrant collection: {e}")
-    exit(1)
-
-vector_store = QdrantVectorStore(
-    client = client,
-    collection_name="History_Nepal",
-    embedding= embedding_model,
-)
-print("Qdrant vector store initialized successfully.")
-
-# texts = [doc.page_content for doc in docs]
-try:
-    qdrant = QdrantVectorStore.from_documents(
-        documents= docs,
-        embedding=embedding_model,
-        sparse_embedding=sparse_embedding,  
-        sparse_vector_name = "sparse-vector",
-        url=qdrant_url,  
-        prefer_grpc=True,
-        api_key=qdrant_api_key,
-        force_recreate= True,
-        collection_name="History_Nepal",
-        retrieval_mode=RetrievalMode.HYBRID,
-    )
-    print("Added documents to Qdrant")
-except Exception as e:
-    print(f"Error while populating data into Qdrant: {e}")
-
-query = "who is Prithvi Narayan Shah? "
-docs_with_score = vector_store.similarity_search(query, k=2)
-
-print(f"Number of results: {len(docs_with_score)}") 
-if docs_with_score:
-    for result in docs_with_score:
-        doc = result 
-        score = result.metadata.get('score', 'No score available') 
-        print("-" * 80)
-        print("Score: ", score)
-        print(doc.page_content)
-        print("-" * 80)
-else:
-    print("No results found for the query.")
+add_document_to_qdrant(docs)
