@@ -20,7 +20,8 @@ except Exception as e:
     print(f"Error while loading sparse embeddings: {e}")
 
 
-client = QdrantClient(path="/home/binit/HistoryOfNepal/qdrant")
+client = QdrantClient(url=qdrant_url, api_key=qdrant_api_key)
+
 def read_documents(chunked_folder_path):
 
     docs = []
@@ -37,7 +38,7 @@ def read_documents(chunked_folder_path):
     return docs
 
 docs = read_documents(chunked_folder_path)
-
+# print(docs[0].page_content)
 if not docs:
     print("No documents were loaded. Exiting the process.")
     exit(1)
@@ -53,6 +54,7 @@ try:
     print("Deleted existing Qdrant collection: History_Nepal")
 except Exception as e:
     print(f"Error deleting existing Qdrant collection: {e}")
+
 
 try:
     client.create_collection(
@@ -71,9 +73,10 @@ vector_store = QdrantVectorStore(
 )
 print("Qdrant vector store initialized successfully.")
 
+# texts = [doc.page_content for doc in docs]
 try:
-    qdrant = QdrantVectorStore.from_texts(
-        texts = docs,
+    qdrant = QdrantVectorStore.from_documents(
+        documents= docs,
         embedding=embedding_model,
         sparse_embedding=sparse_embedding,  
         sparse_vector_name = "sparse-vector",
@@ -88,15 +91,17 @@ try:
 except Exception as e:
     print(f"Error while populating data into Qdrant: {e}")
 
-
-query = "Where is Nepal? "
+query = "who is Prithvi Narayan Shah? "
 docs_with_score = vector_store.similarity_search(query, k=2)
 
-for doc, score in docs_with_score:
-    source = doc.metadata.get('score', 'No score available')
-    print("-" * 80)
-    print("Score: ", score)
-    print(doc.page_content)
-    print("-" * 80)     
-
-
+print(f"Number of results: {len(docs_with_score)}") 
+if docs_with_score:
+    for result in docs_with_score:
+        doc = result 
+        score = result.metadata.get('score', 'No score available') 
+        print("-" * 80)
+        print("Score: ", score)
+        print(doc.page_content)
+        print("-" * 80)
+else:
+    print("No results found for the query.")
