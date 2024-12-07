@@ -47,19 +47,22 @@ try:
         url = url,
         username = username,
         password = password,
+        distance_strategy= 'COSINE'
     )
     print("Documents successfully embedded and stored in Neo4j.")
 except Exception as e:
     print(f"Error storing documents in Neo4j: {e}")
     exit(1)
 
+vectorstore.query()
+
+# query = "Where is Nepal? "
+# docs_with_score = vectorstore.similarity_search_with_score(query, k=2)
+
+# for doc, score in docs_with_score:
+#     print("-" * 80)
+#     print("Score: ", score)
+#     print(doc.page_content)
+#     print("-" * 80)     
 
 
-query = "Where is Nepal? "
-docs_with_score = vectorstore.similarity_search_with_score(query, k=2)
-
-for doc, score in docs_with_score:
-    print("-" * 80)
-    print("Score: ", score)
-    print(doc.page_content)
-    print("-" * 80)     
