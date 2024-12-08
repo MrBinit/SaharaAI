@@ -12,7 +12,6 @@ from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_google_community import GoogleSearchAPIWrapper
 from langchain_experimental.graph_transformers import LLMGraphTransformer
 from hybrid import retrieve_documents_from_qdrant
-
 from dotenv import load_dotenv
 import os
 
@@ -61,11 +60,11 @@ prompt = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            "You are a Nepalese historian with extensive knowledge of Nepal's history. "
-            "You should only answer questions related to Nepal's history and provide only historical information. "
-            "If you don't know the answer, just say 'I don't know this answer.' "
-            "Explain answers in detail. "
-            "If a query is non-historical, say 'I don't know' and do not attempt to search for it online.",
+            "You are a Nepalese historian with deep knowledge of Nepal's history. "
+            "Use the Qdrant retriever tool and then google search tool to fetch historical data that is already available. "
+            "If the answer cannot be found through either tool, say 'I don't know this answer.' "
+            "For non-historical queries, respond with 'I don't know' and do not search online. "
+            "Always provide detailed explanations, combining information from both tools when needed."
         ),
         ("human", "{input}"),
         MessagesPlaceholder(variable_name = "agent_scratchpad"),
@@ -98,7 +97,7 @@ agent_with_chat_history = RunnableWithMessageHistory(
     history_messages_key = "chat_history"
 
 )
-result = agent_with_chat_history.invoke({"input" : "who is King Mahendra and why is the considered as the great king of Nepal?"},
+result = agent_with_chat_history.invoke({"input" : "Who is King's Mahendra and who was the prime minister at that time  "},
                                         config={"configurable": {"session_id": "test-session"}},
 
                                         )
