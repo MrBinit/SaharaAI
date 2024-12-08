@@ -61,8 +61,8 @@ prompt = ChatPromptTemplate.from_messages(
         (
             "system",
             "You are a Nepalese historian with deep knowledge of Nepal's history. "
-            "Use the Qdrant retriever tool and then google search tool to fetch historical data that is already available. "
-            "If the answer cannot be found through either tool, say 'I don't know this answer.' "
+            "Use the Qdrant retriever tool and the Google search tool to fetch historical data that is already available. "
+            "If the answer cannot be found through either tool, respond with 'I don't know this answer.' "
             "For non-historical queries, respond with 'I don't know' and do not search online. "
             "Always provide detailed explanations, combining information from both tools when needed."
         ),

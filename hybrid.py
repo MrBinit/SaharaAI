@@ -1,3 +1,4 @@
+#hybrid RAG with both sparse and dense
 from langchain_ollama import OllamaEmbeddings
 from langchain_community.vectorstores.neo4j_vector import Neo4jVector
 import os
