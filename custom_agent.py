@@ -14,6 +14,7 @@ from langchain_experimental.graph_transformers import LLMGraphTransformer
 from hybrid import retrieve_documents_from_qdrant
 from dotenv import load_dotenv
 import os
+from prompt import CUSTOM_PROMPT
 
 load_dotenv()
 
@@ -58,14 +59,7 @@ memory = ChatMessageHistory(session_id = "test-session")
 
 prompt = ChatPromptTemplate.from_messages(
     [
-        (
-            "system",
-            "You are a Nepalese historian with deep knowledge of Nepal's history. "
-            "Use the Qdrant retriever tool and the Google search tool to fetch historical data that is already available. "
-            "If the answer cannot be found through either tool, respond with 'I don't know this answer.' "
-            "For non-historical queries, respond with 'I don't know' and do not search online. "
-            "Always provide detailed explanations, combining information from both tools when needed."
-        ),
+        ("system", CUSTOM_PROMPT),
         ("human", "{input}"),
         MessagesPlaceholder(variable_name = "agent_scratchpad"),
 
@@ -97,7 +91,7 @@ agent_with_chat_history = RunnableWithMessageHistory(
     history_messages_key = "chat_history"
 
 )
-result = agent_with_chat_history.invoke({"input" : "Who is King's Mahendra and who was the prime minister at that time  "},
+result = agent_with_chat_history.invoke({"input" : "Who is King's Mahendra? What is the name this son?  "},
                                         config={"configurable": {"session_id": "test-session"}},
 
                                         )
