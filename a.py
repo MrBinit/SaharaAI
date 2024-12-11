@@ -1,17 +1,22 @@
-from hybrid import retrieve_documents_from_qdrant
-# Query to retrieve documents based on the search query
-query = "Who is Prithvi Narayan Shah?"
+from neo4j import GraphDatabase
+import os
+from dotenv import load_dotenv
 
-# Retrieve documents from Qdrant
-docs_with_score = retrieve_documents_from_qdrant(query)
+load_dotenv()
 
-# Print the retrieved documents
-if docs_with_score:
-    print(f"Results for the query '{query}':")
-    for result in docs_with_score:
-        print("-" * 80)
-        print("Score:", result["score"])
-        print(result["content"])
-        print("-" * 80)
-else:
-    print("No results found for the query.")
+url = os.getenv("NEO4J_URI")
+username = os.getenv("NEO4J_USERNAME")
+password = os.getenv("NEO4J_PASSWORD")
+
+# Initialize Neo4j connection
+driver = GraphDatabase.driver(url, auth=(username, password))
+
+def check_connection():
+    try:
+        with driver.session() as session:
+            session.run("RETURN 1 AS test")
+            print("Database connection is successful!")
+    except Exception as e:
+        print(f"Error connecting to Neo4j: {e}")
+
+check_connection()
