@@ -33,9 +33,9 @@ def qdrant_retriever(query:str):
 search = GoogleSearchAPIWrapper(google_api_key=google_api_key, google_cse_id = google_cse_id, k = 10)
 tools = [
     Tool(
-    name = "google_search",
-    description= "Search about Nepal's History. If the query is non-Historical tell I don't know and don't search in the Internet",
-    func = search.run,
+        name = "google_search",
+        description= "Search about Nepal's History. If the query is non-Historical tell I don't know and don't search in the Internet",
+        func = search.run,
     ),
     Tool(
         name = "qdrant_retriever",
@@ -91,7 +91,7 @@ agent_with_chat_history = RunnableWithMessageHistory(
     history_messages_key = "chat_history"
 
 )
-result = agent_with_chat_history.invoke({"input" : "Who is Gyanendra Shah?"},
+result = agent_with_chat_history.invoke({"input" : "how many son did King mahendra have? "},
                                         config={"configurable": {"session_id": "test-session"}},
 
                                         )

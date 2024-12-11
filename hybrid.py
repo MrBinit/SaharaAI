@@ -9,6 +9,7 @@ from qdrant_client import QdrantClient
 from qdrant_client.http.models import Distance, VectorParams
 from langchain_qdrant import FastEmbedSparse, RetrievalMode
 
+
 load_dotenv()
 
 chunked_folder_path = os.getenv("CHUNK_FOLDER_PATH")
@@ -99,6 +100,7 @@ def retrieve_documents_from_qdrant(query, k=2, collection_name="History_Nepal"):
     except Exception as e:
         print(f"Error retrieving documents from Qdrant: {e}")
         return []
+    
 
 if __name__ == "__main__":
     docs = read_documents(chunked_folder_path)
