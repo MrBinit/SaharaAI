@@ -25,6 +25,7 @@ def graph_transformer_tool(text):
     graph_transformer = LLMGraphTransformer()
     graph = graph_transformer.transforme(text)
     return graph
+
 def qdrant_retriever(query:str):
     docs_with_score = retrieve_documents_from_qdrant(query)
     return docs_with_score
@@ -50,7 +51,7 @@ tools = [
 ]
 
 llm = ChatOllama(
-    model = "llama3.1",
+    model = "llama3.3",
     temperature = 0, 
     verbose= False
 )
@@ -91,7 +92,7 @@ agent_with_chat_history = RunnableWithMessageHistory(
     history_messages_key = "chat_history"
 
 )
-result = agent_with_chat_history.invoke({"input" : "how many son did King mahendra have? "},
+result = agent_with_chat_history.invoke({"input" : "Who is King Birendra?"},
                                         config={"configurable": {"session_id": "test-session"}},
 
                                         )

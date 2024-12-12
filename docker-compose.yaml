@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  fastapi-app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: history_nepal
+    container_name: history_Nepal1.0
+    ports:
+      - "8000:8000"  
+    volumes:
+      - .:/app 
+
+    restart: always
