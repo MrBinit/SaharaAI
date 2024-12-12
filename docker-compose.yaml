@@ -11,5 +11,31 @@ services:
       - "8000:8000"  
     volumes:
       - .:/app 
-
+    environment:
+      - QDRANT_URL=http://qdrant:6333
+      - QDRANT_API_KEY=${QDRANT_API_KEY} 
+    # networks:
+    #   - historyofnepal_default
     restart: always
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    environment:
+      - QDRANT_API_KEY=${QDRANT_API_KEY}  
+    # networks:
+    #   - historyofnepal_default
+    restart: always
+
+volumes:
+  qdrant_data: 
+
+
+networks:
+  historyofnepal_default:
+    external: true

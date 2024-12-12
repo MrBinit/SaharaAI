@@ -1,9 +1,12 @@
 from hybrid import retrieve_documents_from_qdrant
+
 # Query to retrieve documents based on the search query
-query = "Who is Prithvi Narayan Shah?"
+query = "How was King birendra?"
 
 # Retrieve documents from Qdrant
 docs_with_score = retrieve_documents_from_qdrant(query)
+
+
 
 # Print the retrieved documents
 if docs_with_score:

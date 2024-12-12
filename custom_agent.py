@@ -25,7 +25,6 @@ def graph_transformer_tool(text):
     graph_transformer = LLMGraphTransformer()
     graph = graph_transformer.transforme(text)
     return graph
-
 def qdrant_retriever(query:str):
     docs_with_score = retrieve_documents_from_qdrant(query)
     return docs_with_score
@@ -37,7 +36,7 @@ tools = [
         name = "google_search",
         description= "Search about Nepal's History. If the query is non-Historical tell I don't know and don't search in the Internet",
         func = search.run,
-    ),
+        ),
     Tool(
         name = "qdrant_retriever",
         description= "Retrieves relevant historical documents from Qdrant vector store for a given query.",
@@ -92,7 +91,7 @@ agent_with_chat_history = RunnableWithMessageHistory(
     history_messages_key = "chat_history"
 
 )
-result = agent_with_chat_history.invoke({"input" : "Who is King Birendra?"},
+result = agent_with_chat_history.invoke({"input" : "How did Gurkha Capture Bhaktapur?"},
                                         config={"configurable": {"session_id": "test-session"}},
 
                                         )

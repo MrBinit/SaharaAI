@@ -1,4 +1,4 @@
-#hybrid RAG with both sparse and dense
+# hybrid.py
 from langchain_ollama import OllamaEmbeddings
 import os
 from dotenv import load_dotenv
@@ -69,7 +69,7 @@ def add_document_to_qdrant(docs, collection_name="History_Nepal"):
             sparse_embedding=sparse_embedding,  
             sparse_vector_name="sparse-vector",
             url=qdrant_url,  
-            prefer_grpc=False,
+            prefer_grpc=True,
             api_key=qdrant_api_key,
             force_recreate=False,  
             collection_name=collection_name,
@@ -81,20 +81,17 @@ def add_document_to_qdrant(docs, collection_name="History_Nepal"):
 
 def retrieve_documents_from_qdrant(query, k=2, collection_name="History_Nepal"):
     try:
+        # Query Qdrant with both dense and sparse embeddings
         vector_store = QdrantVectorStore(
             client=client,
             collection_name=collection_name,
             embedding=embedding_model
         )
         docs_with_score = vector_store.similarity_search(query, k=k)
-        results = []
-        for doc in docs_with_score:
-            result = {
-                "content": doc.page_content,
-                "score": doc.metadata.get("score", "No score available")
-            }
-            results.append(result)
-        return results
+        
+        # Ensure that documents are returned in the correct format (as Documents)
+        documents = [Document(page_content=doc.page_content, metadata=doc.metadata) for doc in docs_with_score]
+        return documents
     except Exception as e:
         print(f"Error retrieving documents from Qdrant: {e}")
         return []
