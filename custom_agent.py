@@ -51,7 +51,7 @@ tools = [
 ]
 
 llm = ChatOllama(
-    model = "llama3.3",
+    model = "llama3.1",
     temperature = 0, 
     verbose= False
 )
