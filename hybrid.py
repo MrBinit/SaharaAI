@@ -71,7 +71,7 @@ def add_document_to_qdrant(docs, collection_name="History_Nepal"):
             url=qdrant_url,  
             prefer_grpc=False,
             api_key=qdrant_api_key,
-            force_recreate=False,  
+            force_recreate=True,  
             collection_name=collection_name,
             retrieval_mode=RetrievalMode.HYBRID,
         )

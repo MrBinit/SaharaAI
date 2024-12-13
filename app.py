@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from custom_agent import agent_with_chat_history
 import uvicorn
 
-app = FastAPI()
+app = FastAPI(title="SaharaAI")
 
 
 class query(BaseModel):
