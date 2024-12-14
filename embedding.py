@@ -12,23 +12,24 @@ password = os.getenv("NEO4J_PASSWORD")
 chunked_folder_path = os.getenv("CHUNK_FOLDER_PATH")
 
 
-# def read_documents(chunked_folder_path):
+def read_documents(chunked_folder_path):
 
-#     docs = []
-#     try:
-#         for filename in os.listdir(chunked_folder_path):
-#             if filename.endswith(".txt"):
-#                 file_path = os.path.join(chunked_folder_path, filename)
-#                 with open(file_path, 'r', encoding='utf-8') as file:
-#                     content = file.read()
-#                     docs.append(Document(page_content=content, metadata={}))
+    docs = []
+    try:
+        for filename in os.listdir(chunked_folder_path):
+            if filename.endswith(".txt"):
+                file_path = os.path.join(chunked_folder_path, filename)
+                with open(file_path, 'r', encoding='utf-8') as file:
+                    content = file.read()
+                    docs.append(Document(page_content=content, metadata={}))
 
-#     except Exception as e:
-#         print(f"Error reading documents from folder: {e}")
-#     return docs
+    except Exception as e:
+        print(f"Error reading documents from folder: {e}")
+    return docs
 
-# docs = read_documents(chunked_folder_path)
+docs = read_documents(chunked_folder_path)
 
+print (docs.page_content[0])
 
 # if not docs:
 #     print("No documents were loaded. Exiting the process.")

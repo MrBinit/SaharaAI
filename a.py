@@ -1,7 +1,7 @@
 from hybrid import retrieve_documents_from_qdrant
 
 # Query to retrieve documents based on the search query
-query = "How was King birendra?"
+query = "Points of sugauli treaty"
 
 # Retrieve documents from Qdrant
 docs_with_score = retrieve_documents_from_qdrant(query)

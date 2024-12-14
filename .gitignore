@@ -4,3 +4,5 @@ dataset
 parsed_books 
 parsed_chunked
 venv
+new_books
+*.pdf

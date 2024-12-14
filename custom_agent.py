@@ -91,7 +91,7 @@ agent_with_chat_history = RunnableWithMessageHistory(
     history_messages_key = "chat_history"
 
 )
-result = agent_with_chat_history.invoke({"input" : "How did Gurkha Capture Bhaktapur?"},
+result = agent_with_chat_history.invoke({"input" : "Tell me about Sugauli Treaty?"},
                                         config={"configurable": {"session_id": "test-session"}},
 
                                         )

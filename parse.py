@@ -5,11 +5,14 @@ from pathlib import Path
 import os 
 
 load_dotenv()
+api_key_1 = os.getenv("LLAMA_CLOUD_API_KEY")
+api_key_2 = os.getenv("LLAMA_CLOUD_API_KEY_2")
 
 parser = LlamaParse(
-    result_type = "markdown"
+    result_type = "markdown",
+    api_key= api_key_2
 )
-folder_path = "/home/binit/HistoryOfNepal/books"
+folder_path = "/home/binit/HistoryOfNepal/new_books"
 file_extractor = {".pdf": parser}
 
 pdf_files = [str(file) for file in Path(folder_path).rglob("*.pdf")]
@@ -29,7 +32,7 @@ for i, document in enumerate(documents):
     concatenated_content += f"######## Document {i + 1} \n\n"
     concatenated_content += document.text + "\n\n"
 try:
-    with open(concatenated_file_path, "w") as f:
+    with open(concatenated_file_path, "a") as f:
         f.write(concatenated_content)
     print(f"All documents have been concatenated and saved to {concatenated_file_path}")
 except Exception as e:
