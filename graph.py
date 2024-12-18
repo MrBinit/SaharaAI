@@ -63,14 +63,21 @@ def similarity_search(vectorstore, query):
     except Exception as e:
         print(f"Error during similarity search: {e}")
 
-
-if __name__ == "__main__":
+def query_similarity_search(query ):
     documents = read_documents(chunked_folder_path)
+    if not documents:
+        print("No document found in the folder")
+        return
     vectorstore = retrieval_from_graph(documents)
-    if vectorstore:
-        query = "Who is King Birendra?"
-        similarity_search(vectorstore,query)
 
+    if not vectorstore:
+        print("Failed to create vector store")
+        return 
+    result =similarity_search(vectorstore, query)
+    return result
+if __name__ == "__main__":
+    query = "Who is King Birendra"
+    query_similarity_search(query)
 
 # store = Neo4jVector.from_existing_index()
 # hybrid_db = Neo4jVector.from_documents()

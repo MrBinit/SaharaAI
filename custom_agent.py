@@ -15,6 +15,7 @@ from hybrid import retrieve_documents_from_qdrant
 from dotenv import load_dotenv
 import os
 from prompt import CUSTOM_PROMPT
+from graph import query_similarity_search
 
 load_dotenv()
 
@@ -28,6 +29,9 @@ def graph_transformer_tool(text):
 def qdrant_retriever(query:str):
     docs_with_score = retrieve_documents_from_qdrant(query)
     return docs_with_score
+def knowledge_graph(query:str):
+    result = query_similarity_search(query)
+    return result
 
 # google wrapper
 search = GoogleSearchAPIWrapper(google_api_key=google_api_key, google_cse_id = google_cse_id, k = 10)
@@ -46,7 +50,13 @@ tools = [
         name = "graph transformer",
         description = "Transforms input text into a graph representiation using LLMGraphTransformer",
         func = graph_transformer_tool,
+    ),
+    Tool(
+        name = "knowledge graph",
+        description = "Retrieves relevent relationship among entities from the historical document from knowledge graph for a given query",
+        func= knowledge_graph,
     )
+
 ]
 
 llm = ChatOllama(
