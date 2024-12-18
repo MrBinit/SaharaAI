@@ -11,11 +11,11 @@ from langchain.agents.output_parsers.openai_tools import OpenAIToolsAgentOutputP
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_google_community import GoogleSearchAPIWrapper
 from langchain_experimental.graph_transformers import LLMGraphTransformer
-from hybrid import retrieve_documents_from_qdrant
+from hybrid_search import retrieve_documents_from_qdrant
 from dotenv import load_dotenv
 import os
 from prompt import CUSTOM_PROMPT
-from graph import query_similarity_search
+from neo4j_graph import query_similarity_search
 
 load_dotenv()
 
@@ -52,7 +52,7 @@ tools = [
         func = graph_transformer_tool,
     ),
     Tool(
-        name = "knowledge graph",
+        name = "knowledge_graph",
         description = "Retrieves relevent relationship among entities from the historical document from knowledge graph for a given query",
         func= knowledge_graph,
     )

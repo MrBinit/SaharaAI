@@ -98,5 +98,3 @@ if __name__ == "__main__":
     query = "Who is King Birendra"
     query_similarity_search(query)
 
-# store = Neo4jVector.from_existing_index()
-# hybrid_db = Neo4jVector.from_documents()
