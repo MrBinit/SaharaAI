@@ -6,3 +6,4 @@ parsed_chunked
 venv
 new_books
 *.pdf
+*.csv

@@ -12,7 +12,7 @@ services:
     volumes:
       - .:/app 
     environment:
-      - QDRANT_URL=http://localhost:6333
+      - QDRANT_URL=https://68cfef3d-f148-413d-b30d-8690c2a9aaf8.europe-west3-0.gcp.cloud.qdrant.io:6333
       - QDRANT_API_KEY=${QDRANT_API_KEY} 
     networks:
       - historyofnepal_default
