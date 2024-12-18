@@ -10,7 +10,8 @@ url = os.getenv("NEO4J_URI")
 username = os.getenv("NEO4J_USERNAME")
 password = os.getenv("NEO4J_PASSWORD")
 chunked_folder_path = os.getenv("CHUNK_FOLDER_PATH")
-
+index = "vector"
+keyword_index_name = "keyword"
 
 def read_documents(chunked_folder_path):
     docs = []
@@ -29,31 +30,49 @@ def read_documents(chunked_folder_path):
 
 
 def retrieval_from_graph(documents):
-    if not documents:
-        print("No documents were loaded. Exiting the process")
-        return  None
-
     try:
         embedding_model = OllamaEmbeddings(model="mxbai-embed-large")
         print("Embedding model initialized successfully.")
     except Exception as e:
         print(f"Error initializing the embedding model: {e}")
         return  None
-
+    
     try:
-        vectorstore = Neo4jVector.from_documents(
+        vectorstore = Neo4jVector.from_existing_index(
             embedding=embedding_model,
-            documents=documents,
             url=url,
             username=username,
-            password=password
-            ,
+            password=password,
+            search_type="hybrid",
+            index_name = index,
+            keyword_index_name=keyword_index_name,
         )
-        print("Documents successfully embedded and stored in Neo4j.")
+        print("Successfully connected to the existing Neo4j vector index.")
         return vectorstore
     except Exception as e:
-        print(f"Error storing documents in Neo4j: {e}")
-        return  None 
+        print(f"Existing index not found, Creating a new one ......: {e}")
+
+        documents = read_documents(chunked_folder_path)
+        if not documents:
+            print("No documents were loaded. Cannot create index")
+            return  None
+        try:
+            vectorstore = Neo4jVector.from_documents(
+                embedding=embedding_model,
+                documents=documents,
+                url=url,
+                username=username,
+                password=password,
+                search_type="hybrid",
+                index_name = index,
+                keyword_index_name=keyword_index_name,
+            )
+            print("New vector index created successfully")
+            return vectorstore
+        except Exception as creation_error:
+            print(f"Error creating vector index: {creation_error}")
+
+
 
 def similarity_search(vectorstore, query):
     try:
