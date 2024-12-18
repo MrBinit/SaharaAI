@@ -31,14 +31,14 @@ def read_documents(chunked_folder_path):
 def retrieval_from_graph(documents):
     if not documents:
         print("No documents were loaded. Exiting the process")
-        return  
+        return  None
 
     try:
         embedding_model = OllamaEmbeddings(model="mxbai-embed-large")
         print("Embedding model initialized successfully.")
     except Exception as e:
         print(f"Error initializing the embedding model: {e}")
-        return  
+        return  None
 
     try:
         vectorstore = Neo4jVector.from_documents(
@@ -46,15 +46,17 @@ def retrieval_from_graph(documents):
             documents=documents,
             url=url,
             username=username,
-            password=password,
+            password=password
+            ,
         )
         print("Documents successfully embedded and stored in Neo4j.")
+        return vectorstore
     except Exception as e:
         print(f"Error storing documents in Neo4j: {e}")
-        return  
+        return  None 
 
+def similarity_search(vectorstore, query):
     try:
-        query = "who is King Birendra"
         docs_with_score = vectorstore.similarity_search_with_score(query, k=2)
         for doc, score in docs_with_score:
             print(f"Document: {doc.page_content}\nScore: {score}")
@@ -64,4 +66,11 @@ def retrieval_from_graph(documents):
 
 if __name__ == "__main__":
     documents = read_documents(chunked_folder_path)
-    retrieval_from_graph(documents)
+    vectorstore = retrieval_from_graph(documents)
+    if vectorstore:
+        query = "Who is King Birendra?"
+        similarity_search(vectorstore,query)
+
+
+# store = Neo4jVector.from_existing_index()
+# hybrid_db = Neo4jVector.from_documents()
