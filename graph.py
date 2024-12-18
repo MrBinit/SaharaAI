@@ -13,7 +13,6 @@ chunked_folder_path = os.getenv("CHUNK_FOLDER_PATH")
 
 
 def read_documents(chunked_folder_path):
-
     docs = []
     try:
         for filename in os.listdir(chunked_folder_path):
@@ -21,35 +20,47 @@ def read_documents(chunked_folder_path):
                 file_path = os.path.join(chunked_folder_path, filename)
                 with open(file_path, 'r', encoding='utf-8') as file:
                     content = file.read()
-                    docs.append(Document(page_content=content, metadata={}))
-
+                    docs.append(Document(page_content=content, metadata={"filename": filename}))
+            else:
+                print(f"Skipped non-txt file: {filename}")
     except Exception as e:
         print(f"Error reading documents from folder: {e}")
     return docs
 
-def retrieval_from_graph(document):
-    if not document:
-        print("No document were loaded. Exiting the process")
+
+def retrieval_from_graph(documents):
+    if not documents:
+        print("No documents were loaded. Exiting the process")
+        return  
+
     try:
-        embedding_model = OllamaEmbeddings(model = "mxbai-embed-large")
+        embedding_model = OllamaEmbeddings(model="mxbai-embed-large")
         print("Embedding model initialized successfully.")
     except Exception as e:
         print(f"Error initializing the embedding model: {e}")
-        exit(1)
+        return  
 
     try:
         vectorstore = Neo4jVector.from_documents(
-            embedding = embedding_model,
-            documents = document,
-            url = url,
-            username = username,
-            password = password,
-
+            embedding=embedding_model,
+            documents=documents,
+            url=url,
+            username=username,
+            password=password,
         )
         print("Documents successfully embedded and stored in Neo4j.")
     except Exception as e:
         print(f"Error storing documents in Neo4j: {e}")
-        exit(1)
+        return  
+
+    try:
+        query = "who is King Birendra"
+        docs_with_score = vectorstore.similarity_search_with_score(query, k=2)
+        for doc, score in docs_with_score:
+            print(f"Document: {doc.page_content}\nScore: {score}")
+    except Exception as e:
+        print(f"Error during similarity search: {e}")
+
 
 if __name__ == "__main__":
     documents = read_documents(chunked_folder_path)
