@@ -1,6 +1,3 @@
-# prompt.py
-
-from function_definitions import function_definitions
 
 CUSTOM_PROMPT = """<|begin_of_text|><|start_header_id|>system<|end_header_id|>
 
