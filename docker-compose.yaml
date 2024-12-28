@@ -1,42 +1,49 @@
-
-
 services:
-  fastapi-app:
+  web:
     build: 
       context: .
       dockerfile: Dockerfile
-    image: history_nepal
-    container_name: history_Nepal1.0
-    ports:
-      - "8000:8000"  
-    volumes:
-      - .:/app 
     environment:
-      - QDRANT_URL=https://68cfef3d-f148-413d-b30d-8690c2a9aaf8.europe-west3-0.gcp.cloud.qdrant.io:6333
-      - QDRANT_API_KEY=${QDRANT_API_KEY} 
-    networks:
-      - historyofnepal_default
-    restart: always
+      DATABASE_URL: "postgresql://postgres_user:postgres_password@db:5432/postgres_db"
+      OLLAMA_URL: "http://ollama:11434"  
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - ollama
+    volumes:
+      - .:/app
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+  
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres_user
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_DB: postgres_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
-  qdrant:
-    image: qdrant/qdrant:latest
-    container_name: qdrant
+    
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
     ports:
-      - "6333:6333"
-      - "6334:6334"
+      - "11434:11434"
     volumes:
-      - qdrant_data:/qdrant/storage
-    environment:
-      - QDRANT_API_KEY=${QDRANT_API_KEY}  
-    networks:
-      - historyofnepal_default
-    restart: always
+    - ~/.ollama/models:/root/.ollama/models
+
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            capabilities: [gpu]
+            count: all
 
 volumes:
-  qdrant_data: 
-
-
-networks:
-  historyofnepal_default:
-    driver: bridge
-  
+ pgdata:

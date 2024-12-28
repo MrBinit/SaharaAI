@@ -1,8 +1,7 @@
-FROM python:3.12.3
-RUN apt-get update && apt-get install -y curl && apt-get install -y iputils-ping
-WORKDIR /app/ 
-COPY ./requirements.txt /app/requirements.txt
-RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
-COPY .env /app/.env
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt /app/requirements.txt
+RUN pip install -r requirements.txt
+COPY . .
 EXPOSE 8000
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

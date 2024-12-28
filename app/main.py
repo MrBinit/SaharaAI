@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from custom_agent import agent_with_chat_history
+from agents.custom_agent import agent_with_chat_history
 import uvicorn
 
 app = FastAPI(title="SaharaAI")

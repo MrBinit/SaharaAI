@@ -21,7 +21,7 @@ except Exception as e:
     print(f"Error while loading sparse embeddings: {e}")
 
 try:
-    embedding_model = OllamaEmbeddings(model="mxbai-embed-large")
+    embedding_model = OllamaEmbeddings(model="mxbai-embed-large", base_url="http://ollama:11434")
     print("Embedding model initialized successfully.")
 except Exception as e:
     print(f"Error initializing the embedding model: {e}")
@@ -84,7 +84,7 @@ def retrieve_documents_from_qdrant(query, k=2, collection_name="History_Nepal"):
         vector_store = QdrantVectorStore(
             client=client,
             collection_name=collection_name,
-            embedding=embedding_model
+            embedding=embedding_model,
         )
         docs_with_score = vector_store.similarity_search(query, k=k)
         results = []
