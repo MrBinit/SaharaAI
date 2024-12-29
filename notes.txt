@@ -1,6 +1,0 @@
-
-# CHUNK_FOLDER_PATH="/app/parsed_chunked"
-
-# QDRANT_URL=https://68cfef3d-f148-413d-b30d-8690c2a9aaf8.europe-west3-0.gcp.cloud.qdrant.io:6333
-
-

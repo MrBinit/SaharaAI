@@ -1,9 +1,10 @@
+# this is done to chunk the parse document is done after parsing the document.(parse.py)
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 import os
 import re
 
-parsed_document = "/home/binit/HistoryOfNepal/parsed_books/parsed_documents.md"
-output_folder = "/home/binit/HistoryOfNepal/parsed_chunked/"
+parsed_document = "/home/binit/HistoryOfNepal/data/parsed_books/parsed_documents.md"
+output_folder = "/home/binit/HistoryOfNepal/data/parsed_chunked"
 
 def load_parsed_document(file_path):
     with open(file_path, 'r') as file:

@@ -11,11 +11,11 @@ from langchain.agents.output_parsers.openai_tools import OpenAIToolsAgentOutputP
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_google_community import GoogleSearchAPIWrapper
 from langchain_experimental.graph_transformers import LLMGraphTransformer
-from hybrid import retrieve_documents_from_qdrant
+from retrievers.hybrid_search import retrieve_documents_from_qdrant
 from dotenv import load_dotenv
 import os
-from prompt import CUSTOM_PROMPT
-from graph import query_similarity_search
+from prompt_templates.prompt import CUSTOM_PROMPT
+from retrievers.neo4j_graph import query_similarity_search
 
 load_dotenv()
 
@@ -36,33 +36,34 @@ def knowledge_graph(query:str):
 # google wrapper
 search = GoogleSearchAPIWrapper(google_api_key=google_api_key, google_cse_id = google_cse_id, k = 10)
 tools = [
-    Tool(
-        name = "google_search",
-        description= "Search about Nepal's History. If the query is non-Historical tell I don't know and don't search in the Internet",
-        func = search.run,
-        ),
+    # Tool(
+    #     name = "google_search",
+    #     description= "Search about Nepal's History. If the query is non-Historical tell I don't know and don't search in the Internet",
+    #     func = search.run,
+    #     ),
     Tool(
         name = "qdrant_retriever",
         description= "Retrieves relevant historical documents from Qdrant vector store for a given query.",
         func=qdrant_retriever,
     ),
-    Tool(
-        name = "graph transformer",
-        description = "Transforms input text into a graph representiation using LLMGraphTransformer",
-        func = graph_transformer_tool,
-    ),
-    Tool(
-        name = "knowledge graph",
-        description = "Retrieves relevent relationship among entities from the historical document from knowledge graph for a given query",
-        func= knowledge_graph,
-    )
+    # Tool(
+    #     name = "graph transformer",
+    #     description = "Transforms input text into a graph representiation using LLMGraphTransformer",
+    #     func = graph_transformer_tool,
+    # ),
+    # Tool(
+    #     name = "knowledge_graph",
+    #     description = "Retrieves relevent relationship among entities from the historical document from knowledge graph for a given query",
+    #     func= knowledge_graph,
+    # )
 
 ]
 
 llm = ChatOllama(
     model = "llama3.2:3b",
     temperature = 0, 
-    verbose= False
+    verbose= False, 
+    base_url="http://ollama:11434"
 )
 
 memory = ChatMessageHistory(session_id = "test-session")
@@ -101,7 +102,7 @@ agent_with_chat_history = RunnableWithMessageHistory(
     history_messages_key = "chat_history"
 
 )
-result = agent_with_chat_history.invoke({"input" : "Tell me about Sugauli Treaty?"},
+result = agent_with_chat_history.invoke({"input" : "Tell me about sugauli treaty"},
                                         config={"configurable": {"session_id": "test-session"}},
 
                                         )

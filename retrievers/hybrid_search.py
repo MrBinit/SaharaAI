@@ -11,7 +11,6 @@ from langchain_qdrant import FastEmbedSparse, RetrievalMode
 load_dotenv()
 
 chunked_folder_path = os.getenv("CHUNK_FOLDER_PATH")
-qdrant_api_key = os.getenv("QDRANT_API_KEY")
 qdrant_url = os.getenv("QDRANT_URL")
 
 try:
@@ -21,14 +20,14 @@ except Exception as e:
     print(f"Error while loading sparse embeddings: {e}")
 
 try:
-    embedding_model = OllamaEmbeddings(model="mxbai-embed-large")
+    embedding_model = OllamaEmbeddings(model="mxbai-embed-large", base_url="http://ollama:11434")
     print("Embedding model initialized successfully.")
 except Exception as e:
     print(f"Error initializing the embedding model: {e}")
     exit(1)
 
 try:
-    client = QdrantClient(url=qdrant_url, api_key=qdrant_api_key)
+    client = QdrantClient(url=qdrant_url)
     print("Connected to Qdrant successfully.")
 except Exception as e:
     print(f"Error connecting to Qdrant: {e}")
@@ -70,7 +69,6 @@ def add_document_to_qdrant(docs, collection_name="History_Nepal"):
             sparse_vector_name="sparse-vector",
             url=qdrant_url,  
             prefer_grpc=False,
-            api_key=qdrant_api_key,
             force_recreate=True,  
             collection_name=collection_name,
             retrieval_mode=RetrievalMode.HYBRID,
@@ -84,7 +82,7 @@ def retrieve_documents_from_qdrant(query, k=2, collection_name="History_Nepal"):
         vector_store = QdrantVectorStore(
             client=client,
             collection_name=collection_name,
-            embedding=embedding_model
+            embedding=embedding_model,
         )
         docs_with_score = vector_store.similarity_search(query, k=k)
         results = []

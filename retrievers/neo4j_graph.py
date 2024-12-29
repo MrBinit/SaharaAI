@@ -46,31 +46,35 @@ def retrieval_from_graph(documents):
             search_type="hybrid",
             index_name = index,
             keyword_index_name=keyword_index_name,
+            node_label=["Events", "Person"],
+            embedding_node_property="embedding",
         )
         print("Successfully connected to the existing Neo4j vector index.")
         return vectorstore
     except Exception as e:
         print(f"Existing index not found, Creating a new one ......: {e}")
 
-        documents = read_documents(chunked_folder_path)
-        if not documents:
-            print("No documents were loaded. Cannot create index")
-            return  None
-        try:
-            vectorstore = Neo4jVector.from_documents(
-                embedding=embedding_model,
-                documents=documents,
-                url=url,
-                username=username,
-                password=password,
-                search_type="hybrid",
-                index_name = index,
-                keyword_index_name=keyword_index_name,
-            )
-            print("New vector index created successfully")
-            return vectorstore
-        except Exception as creation_error:
-            print(f"Error creating vector index: {creation_error}")
+    documents = read_documents(chunked_folder_path)
+    if not documents:
+        print("No documents were loaded. Cannot create index")
+        return  None
+    try:
+        vectorstore = Neo4jVector.from_documents(
+            embedding=embedding_model,
+            documents=documents,
+            url=url,
+            username=username,
+            password=password,
+            search_type="hybrid",
+            index_name = index,
+            keyword_index_name=keyword_index_name,
+            node_label=["Events", "Person"],
+            embedding_node_property="embedding",
+        )
+        print("New vector index created successfully")
+        return vectorstore
+    except Exception as creation_error:
+        print(f"Error creating vector index: {creation_error}")
 
 
 
@@ -98,5 +102,3 @@ if __name__ == "__main__":
     query = "Who is King Birendra"
     query_similarity_search(query)
 
-# store = Neo4jVector.from_existing_index()
-# hybrid_db = Neo4jVector.from_documents()

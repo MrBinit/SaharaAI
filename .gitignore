@@ -7,3 +7,5 @@ venv
 new_books
 *.pdf
 *.csv
+__pycache__/
+*.pyc
