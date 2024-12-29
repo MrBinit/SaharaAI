@@ -7,6 +7,9 @@ from langchain_qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import Distance, VectorParams
 from langchain_qdrant import FastEmbedSparse, RetrievalMode
+from langchain.retrievers.contextual_compression import ContextualCompressionRetriever
+from langchain_cohere import CohereRerank
+
 
 load_dotenv()
 
@@ -31,6 +34,13 @@ try:
     print("Connected to Qdrant successfully.")
 except Exception as e:
     print(f"Error connecting to Qdrant: {e}")
+    exit(1)
+
+try:
+    compressor = CohereRerank(model="rerank-english-v3.0")
+    print("Compressor initialized successfully.")
+except Exception as e:
+    print(f"Error initializing the reranker: {e}")
     exit(1)
 
 def read_documents(chunked_folder_path):
@@ -77,7 +87,7 @@ def add_document_to_qdrant(docs, collection_name="History_Nepal"):
     except Exception as e:
         print(f"Error while populating data into Qdrant: {e}")
 
-def retrieve_documents_from_qdrant(query, k=2, collection_name="History_Nepal"):
+def retrieve_documents_from_qdrant(query, k=10,rerank_top_k=5, collection_name="History_Nepal"):
     try:
         vector_store = QdrantVectorStore(
             client=client,
@@ -85,8 +95,10 @@ def retrieve_documents_from_qdrant(query, k=2, collection_name="History_Nepal"):
             embedding=embedding_model,
         )
         docs_with_score = vector_store.similarity_search(query, k=k)
+
+        rerank_docs = compressor.rerank(query, docs_with_score[:rerank_top_k])
         results = []
-        for doc in docs_with_score:
+        for doc in enumerate(rerank_docs):
             result = {
                 "content": doc.page_content,
                 "score": doc.metadata.get("score", "No score available")
