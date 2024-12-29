@@ -6,11 +6,13 @@ services:
     environment:
       DATABASE_URL: "postgresql://postgres_user:postgres_password@db:5432/postgres_db"
       OLLAMA_URL: "http://ollama:11434"  
+      QDRANT_URL: "http://qdrant_database:6333"
     ports:
       - "8000:8000"
     depends_on:
       - db
       - ollama
+      - qdrant_database
     volumes:
       - .:/app
     command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
@@ -35,8 +37,6 @@ services:
       - "11434:11434"
     volumes:
     - ~/.ollama/models:/root/.ollama/models
-
-
     deploy:
       resources:
         reservations:
@@ -45,5 +45,18 @@ services:
             capabilities: [gpu]
             count: all
 
+  qdrant_database:
+    image: qdrant/qdrant:latest
+    container_name: qdrant_database
+    restart: unless-stopped
+    ports:
+      - "6333:6333"
+    environment:
+      QDRANT_CONFIG_PATH: /qdrant/config.yml
+    volumes:
+      - ./qdrant/config.yml:/qdrant/config.yml
+      - qdrant_data:/qdrant/data
+
 volumes:
  pgdata:
+ qdrant_data:
