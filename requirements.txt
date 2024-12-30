@@ -13,3 +13,4 @@ uvicorn
 fastapi
 fastembed
 langchain
+neo4j
