@@ -9,3 +9,7 @@ new_books
 *.csv
 __pycache__/
 *.pyc
+qdrant_data
+qdrant_data/
+qdrant
+qdrant/

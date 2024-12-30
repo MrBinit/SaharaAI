@@ -16,6 +16,7 @@ services:
     volumes:
       - .:/app
     command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    restart: always
   
   db:
     image: postgres:13
@@ -55,8 +56,9 @@ services:
       QDRANT_CONFIG_PATH: /qdrant/config.yml
     volumes:
       - ./qdrant/config.yml:/qdrant/config.yml
-      - qdrant_data:/qdrant/data
+      - ./qdrant_data:/qdrant/storage/
+      - ./retrievers:/app/retrieval/
 
 volumes:
- pgdata:
- qdrant_data:
+  pgdata:
+    driver: local
