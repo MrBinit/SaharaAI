@@ -6,12 +6,17 @@ from langchain.schema import Document
 
 load_dotenv()
 
-url = os.getenv("NEO4J_URI")
+URI = os.getenv("NEO4J_URL")
 username = os.getenv("NEO4J_USERNAME")
 password = os.getenv("NEO4J_PASSWORD")
 chunked_folder_path = os.getenv("CHUNK_FOLDER_PATH")
 index = "vector"
 keyword_index_name = "keyword"
+OLLAMA_BASE_URL = "http://ollama:11434"
+
+print("neo4j url:" ,URI)
+print("neo4j username:" ,username)
+print("neo4j password:" ,password)
 
 def read_documents(chunked_folder_path):
     docs = []
@@ -31,7 +36,7 @@ def read_documents(chunked_folder_path):
 
 def retrieval_from_graph(documents):
     try:
-        embedding_model = OllamaEmbeddings(model="mxbai-embed-large")
+        embedding_model = OllamaEmbeddings(model="mxbai-embed-large", base_url=OLLAMA_BASE_URL)
         print("Embedding model initialized successfully.")
     except Exception as e:
         print(f"Error initializing the embedding model: {e}")
@@ -40,7 +45,7 @@ def retrieval_from_graph(documents):
     try:
         vectorstore = Neo4jVector.from_existing_index(
             embedding=embedding_model,
-            url=url,
+            url=URI,
             username=username,
             password=password,
             search_type="hybrid",
@@ -62,7 +67,7 @@ def retrieval_from_graph(documents):
         vectorstore = Neo4jVector.from_documents(
             embedding=embedding_model,
             documents=documents,
-            url=url,
+            url=URI,
             username=username,
             password=password,
             search_type="hybrid",
@@ -98,7 +103,10 @@ def query_similarity_search(query ):
         return 
     result =similarity_search(vectorstore, query)
     return result
+
 if __name__ == "__main__":
     query = "Who is King Birendra"
     query_similarity_search(query)
+
+
 

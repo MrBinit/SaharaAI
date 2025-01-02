@@ -1,6 +1,7 @@
 FROM python:3.11-slim
 WORKDIR /app
 COPY requirements.txt /app/requirements.txt
+RUN apt-get update && apt-get install nano -y
 RUN pip install -r requirements.txt
 COPY . .
 EXPOSE 8000
