@@ -12,6 +12,7 @@ load_dotenv()
 
 chunked_folder_path = os.getenv("CHUNK_FOLDER_PATH")
 qdrant_url = os.getenv("QDRANT_URL")
+ollama_base_url = os.getenv("OLLAMA_BASE_URL")
 
 try:
     sparse_embedding = FastEmbedSparse(model_name="Qdrant/bm25")
@@ -20,7 +21,7 @@ except Exception as e:
     print(f"Error while loading sparse embeddings: {e}")
 
 try:
-    embedding_model = OllamaEmbeddings(model="mxbai-embed-large", base_url="http://ollama:11434")
+    embedding_model = OllamaEmbeddings(model="mxbai-embed-large", base_url=ollama_base_url)
     print("Embedding model initialized successfully.")
 except Exception as e:
     print(f"Error initializing the embedding model: {e}")

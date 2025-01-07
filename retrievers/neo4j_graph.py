@@ -10,13 +10,9 @@ URI = os.getenv("NEO4J_URL")
 username = os.getenv("NEO4J_USERNAME")
 password = os.getenv("NEO4J_PASSWORD")
 chunked_folder_path = os.getenv("CHUNK_FOLDER_PATH")
+ollama_base_url = os.getenv("OLLAMA_BASE_URL")
 index = "vector"
 keyword_index_name = "keyword"
-OLLAMA_BASE_URL = "http://ollama:11434"
-
-print("neo4j url:" ,URI)
-print("neo4j username:" ,username)
-print("neo4j password:" ,password)
 
 def read_documents(chunked_folder_path):
     docs = []
@@ -36,7 +32,7 @@ def read_documents(chunked_folder_path):
 
 def retrieval_from_graph(documents):
     try:
-        embedding_model = OllamaEmbeddings(model="mxbai-embed-large", base_url=OLLAMA_BASE_URL)
+        embedding_model = OllamaEmbeddings(model="mxbai-embed-large", base_url=ollama_base_url)
         print("Embedding model initialized successfully.")
     except Exception as e:
         print(f"Error initializing the embedding model: {e}")
@@ -73,7 +69,7 @@ def retrieval_from_graph(documents):
             search_type="hybrid",
             index_name = index,
             keyword_index_name=keyword_index_name,
-            node_label=["Events", "Person"],
+            node_label = ["Events", "Person", "Place", "Dynasty", "Artifact", "Concept", "Era", "Organization"],
             embedding_node_property="embedding",
         )
         print("New vector index created successfully")

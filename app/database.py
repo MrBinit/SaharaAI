@@ -1,14 +1,15 @@
-import os
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# Load environment variables
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres_user:postgres_password@db:5432/postgres_db")
+DATABASE_URL = "postgresql://chatbot_user:chatbot_user@db:5432/chatbot_db"
 
-# Set up SQLAlchemy
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Base class for models
-Base = declarative_base()
+def init_db():
+    from app.models import Base
+    print("Initializing database...")
+    Base.metadata.create_all(bind=engine)
+    print("Database tables created.")
+
+

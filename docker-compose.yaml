@@ -4,7 +4,8 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      DATABASE_URL: "postgresql://postgres_user:postgres_password@db:5432/postgres_db"
+      DATABASE_URL: "postgresql://chatbot_user:chatbot_user@db:5432/chatbot_db"
+    
       OLLAMA_URL: "http://ollama:11434"  
       QDRANT_URL: "http://qdrant_database:6333"
       NEO4J_URL: "bolt://neo4j_database:7687"
@@ -15,6 +16,8 @@ services:
       - ollama
       - qdrant_database
       - neo4j
+
+
     volumes:
       - .:/app
     networks:
@@ -24,16 +27,23 @@ services:
   
   db:
     image: postgres:13
+    container_name: chatbot_postgres
     environment:
-      POSTGRES_USER: postgres_user
-      POSTGRES_PASSWORD: postgres_password
-      POSTGRES_DB: postgres_db
+      POSTGRES_USER: chatbot_user
+      POSTGRES_PASSWORD: chatbot_user
+      POSTGRES_DB: chatbot_db
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     networks:
       - my_network
+      
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
 
     
   ollama:
@@ -102,6 +112,7 @@ volumes:
     driver: local
   neo4j_logs:
     driver: local
+
 networks:
   my_network:
     driver: bridge
