@@ -55,7 +55,7 @@ def ask_question(query: query, db: Session = Depends(get_db)):
             print("No result found for query")
             raise HTTPException(status_code=500, detail="No result found")
     except Exception as e:
-        print("Exception occurred: {str{e}}")
+        print("Exception occurred: {e}")
         raise HTTPException(status_code=500, detail=str(e))
     
 @app.get("/")

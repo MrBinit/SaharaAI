@@ -3,7 +3,7 @@ from app.models import ChatbotHistory
 
 def create_history(db: Session, query: str, result: str, session_id: str):
     print(f"Creating history: query='{query}', result='{result}', session_id='{session_id}'")
-    new_entry = ChatbotHistory(query=query, result=result)
+    new_entry = ChatbotHistory(query=query, result=result, session_id = session_id)
     db.add(new_entry)
     db.commit()
     db.refresh(new_entry)
