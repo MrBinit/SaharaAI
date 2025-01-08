@@ -5,7 +5,7 @@ import uvicorn
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from app.database import SessionLocal, init_db
-from app.crud import create_history
+from app.crud import create_history,  list_sessions, get_or_create_session
 
 app = FastAPI(title="SaharaAI")
 
@@ -32,15 +32,15 @@ def startup_event():
 
 @app.post("/ask/")
 def ask_question(query: query, db: Session = Depends(get_db)):
-    print(f"Received query: {query.input}, session_id: {query.session_id}")
     try:
+        session = get_or_create_session(db, session_id = query.session_id)
         result = agent_with_chat_history.invoke(
             {"input": query.input},
             config={"configurable": {"session_id": query.session_id}}
         )
         if result:
             print("chatbot response generated successfully.")
-            create_history(
+            history_entry = create_history(
                 db, 
                 query = query.input, 
                 result= result['output'],
@@ -49,7 +49,8 @@ def ask_question(query: query, db: Session = Depends(get_db)):
             return {
                 "query" : query.input,
                 "result": result['output'],
-                "session_id" : query.session_id
+                "session_id" : query.session_id,
+                "timestamp": history_entry.timestamp  
             }
         else:
             print("No result found for query")
@@ -61,6 +62,11 @@ def ask_question(query: query, db: Session = Depends(get_db)):
 @app.get("/")
 def root():
     return {"message": "Welcome to Sahara AI!"}
+
+
+@app.get("/sessions/")
+def get_sessions(db: Session = Depends(get_db)):
+    return list_sessions(db)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
