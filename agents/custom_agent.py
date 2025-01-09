@@ -46,11 +46,6 @@ tools = [
         description= "Retrieves relevant historical documents from Qdrant vector store for a given query.",
         func=qdrant_retriever,
     ),
-    # Tool(
-    #     name = "graph transformer",
-    #     description = "Transforms input text into a graph representiation using LLMGraphTransformer",
-    #     func = graph_transformer_tool,
-    # ),
     Tool(
         name = "knowledge_graph",
         description = "Retrieves relevent relationship among entities from the historical document from knowledge graph for a given query",

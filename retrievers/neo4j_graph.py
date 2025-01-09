@@ -47,7 +47,7 @@ def retrieval_from_graph(documents):
             search_type="hybrid",
             index_name = index,
             keyword_index_name=keyword_index_name,
-            node_label=["Events", "Person"],
+            node_label=["Events", "Person", "Place", "Dynasty", "Artifact", "Concept", "Era", "Organization"],
             embedding_node_property="embedding",
         )
         print("Successfully connected to the existing Neo4j vector index.")

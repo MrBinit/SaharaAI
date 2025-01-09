@@ -14,3 +14,15 @@ use bolt localhost:7687
 
 when there is neo4j websocket issue . then we need to go to neo4j container and then go to config . and then run apt-get update && apt-get install nano -y
  and then then go inside nano neo4j.conf then go to network config and then uncomment server.default_listen_address=0.0.0.0
+
+
+
+ IN NEO4J.
+ **Delete All Nodes and Relationships**
+ MATCH (n) DETACH DELETE n;
+
+ **SHOW INDEX**
+SHOW INDEXES;
+
+ **DROP INDEX** 
+DROP INDEX `index_name`;
