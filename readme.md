@@ -1,28 +1,183 @@
-store data in new_books 
-and later shift to documents to books folders. 
-first. We will run parse.py 
-then we will run extraction.py
-then we will hybrid_search and neo4j_graph which will embed the data and then store in qdrant and knowledge graph
-and finally we will be custom_agents.py
+# History of Nepal Chatbot
 
+## Overview
+The History of Nepal Chatbot is an intelligent conversational agent designed to provide users with accurate, in-depth, and engaging information about the history of Nepal. It integrates multiple advanced technologies and tools to ensure high-quality responses, leveraging retrieval-augmented generation (RAG) techniques, knowledge graphs, and internet-based searches.
 
+---
 
-to access neo4j
+## Features
 
+### Core Functionalities
+- **Knowledge Sources**:
+  - **Qdrant**: For dense retrieval using embeddings.
+  - **Knowledge Graph (Neo4j)**: To explore relationships among historical entities.
+  - **Google Search**: To supplement responses with up-to-date information.
+- **Conversation Handling**:
+  - Session-based interactions using LangChain.
+  - Stores old conversations for context-aware responses.
+- **Custom Agent**:
+  - Orchestrates workflows to retrieve and synthesize data seamlessly.
+- **Data Persistence**:
+  - Query and response storage in PostgreSQL with session IDs and timestamps.
 
-use bolt localhost:7687
+### Infrastructure
+- Fully Dockerized architecture for ease of deployment.
+- Integration of multiple services:
+  - **Ollama** for language modeling.
+  - **LangChain** for query handling.
+  - **PostgreSQL** for database storage.
+  - **Neo4j** for graph-based data representation.
+  - **Qdrant** for vector-based search.
 
-when there is neo4j websocket issue . then we need to go to neo4j container and then go to config . and then run apt-get update && apt-get install nano -y
- and then then go inside nano neo4j.conf then go to network config and then uncomment server.default_listen_address=0.0.0.0
+### Additional Features
+- **Multi-source validation**:
+  - Google Search validates outputs from Qdrant and Neo4j.
+  - Replaces inconsistent or outdated information with Google search results.
+- **Session Management**:
+  - Tracks and retains user sessions for enhanced interaction.
+- **Time-Stamped Logs**:
+  - Maintains a history of interactions for user reviews and analytics.
 
+---
 
+## Technology Stack
 
- IN NEO4J.
- **Delete All Nodes and Relationships**
- MATCH (n) DETACH DELETE n;
+### Backend
+- **Ollama**: Language model for generating human-like responses.
+- **LangChain**: Manages interaction workflows and context handling.
 
- **SHOW INDEX**
-SHOW INDEXES;
+### Data Management
+- **Qdrant**: Vector database for document retrieval.
+- **Neo4j**: Graph database for entity relationships.
+- **PostgreSQL**: Stores query-response pairs with session data.
 
- **DROP INDEX** 
-DROP INDEX `index_name`;
+### Deployment
+- **Docker**: Containers for all components, ensuring portability and scalability.
+
+### External Services
+- **Google Search API**: Provides supplementary information and validation.
+
+---
+
+## Installation and Setup
+
+### Prerequisites
+- **Docker**
+- **Docker Compose**
+
+### Steps
+1. Clone the repository:
+   ```bash
+   git clone <repository_url>
+   cd <repository_directory>
+   ```
+
+2. Create a `.env` file for environment variables. Example:
+   ```env
+   QDRANT_URL=192.168.100.100
+   NEO4J_URI=bolt://localhost:7687
+   POSTGRES_URL=postgresql://user:password@localhost:5432/history_bot
+   GOOGLE_API_KEY=<your_google_api_key>
+   ```
+
+3. Build and start the Docker containers:
+   ```bash
+   docker-compose up --build
+   ```
+
+4. Access the chatbot service via the designated API endpoint or UI (if available).
+
+---
+
+## Usage
+
+1. **Ask Historical Questions**:
+   - Example: "What is the significance of the Battle of Kirtipur?"
+   - The chatbot will retrieve information from Qdrant, Neo4j, and validate with Google Search.
+
+2. **Explore Relationships**:
+   - Example: "What was the relationship between Prithvi Narayan Shah and the British East India Company?"
+
+3. **Session Continuity**:
+   - Engage in conversations where the chatbot retains the context of previous queries.
+
+---
+
+## API Endpoints
+
+### 1. **Chat**
+- **Endpoint**: `/api/chat`
+- **Method**: `POST`
+- **Payload**:
+  ```json
+  {
+    "query": "What is the history of Lumbini?",
+    "session_id": "12345"
+  }
+  ```
+
+### 2. **Retrieve Old Conversations**
+- **Endpoint**: `/api/conversations`
+- **Method**: `GET`
+- **Query Parameters**:
+  - `session_id`: Session identifier
+
+---
+
+## System Architecture
+
+1. **User Query**:
+   - Input query received via API or UI.
+
+2. **Retrieval**:
+   - Query sent to Qdrant for vector-based search.
+   - Query sent to Neo4j for graph traversal.
+
+3. **Validation and Augmentation**:
+   - Google Search API validates and supplements retrieved data.
+
+4. **Response Generation**:
+   - Data synthesized using Ollama and LangChain.
+   - Response stored in PostgreSQL with session ID and timestamp.
+
+5. **Final Output**:
+   - Context-aware and validated response delivered to the user.
+
+---
+
+## Future Enhancements
+
+1. **Multilingual Support**:
+   - Include support for Nepali and other regional languages.
+2. **Interactive Visualizations**:
+   - Timelines, maps, and graphs for richer user experiences.
+3. **Voice Integration**:
+   - Enable voice-based queries and responses.
+4. **AI-Driven Insights**:
+   - Predictive analytics and insights about historical trends.
+
+---
+
+## Contributing
+Contributions are welcome! Please follow the steps below:
+1. Fork the repository.
+2. Create a new branch:
+   ```bash
+   git checkout -b feature-branch-name
+   ```
+3. Commit your changes and open a pull request.
+
+---
+
+## License
+This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+---
+
+## Acknowledgements
+- The creators of Ollama, LangChain, Qdrant, Neo4j, and PostgreSQL for providing robust tools.
+- Google Search API for real-time supplementary information.
+
+---
+
+For any issues or queries, please contact [sapkotabinit2002@gmail.com].
