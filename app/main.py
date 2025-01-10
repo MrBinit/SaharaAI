@@ -58,7 +58,7 @@ def ask_question(query: query, db: Session = Depends(get_db)):
                 )
                 return {
                     "query" : query.input,
-                    "result": translated_text,
+                    "result": translated_result,
                     "session_id" : query.session_id,
                     "timestamp": history_entry.timestamp  
                 }

@@ -76,7 +76,7 @@ nepali_to_english_dict = {
     "हनुमान ढोका दरबार" : "hanuman dhoka durbar",
     "नेपाल कांग्रेस" : "nepali congress",
     "नेकपा एमाले" : "cpn-uml",
-    "नेकपा माओवादी" : "cpn-maoist"
+    "नेकपा माओवादी" : "cpn-maoist",
     "विक्रम संवत" : "bikram sambat",
     "अनुवाद" : "translation",
     "इतिहास" : "history",
@@ -94,7 +94,6 @@ nepali_to_english_dict = {
     "गणतन्त्र" : "republic",
     "नेपाल एकीकरण" : "unification of nepal",
     "महिला अधिकार" : "women's rights",
-
-}
+    }
 
 english_to_nepali_dict = {v.lower(): k for k, v in nepali_to_english_dict.items()}
