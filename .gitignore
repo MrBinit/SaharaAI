@@ -14,3 +14,4 @@ qdrant_data/
 qdrant
 qdrant/
 neo4j
+nllb-200-distilled-600M-ct2-int8
