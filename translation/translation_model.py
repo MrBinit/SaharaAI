@@ -1,7 +1,7 @@
 import torch
 import warnings
 import re
-from mapping_dictionary import nepali_to_english_dict, english_to_nepali_dict
+from translation.mapping_dictionary import nepali_to_english_dict, english_to_nepali_dict
 import ctranslate2
 import transformers
 
