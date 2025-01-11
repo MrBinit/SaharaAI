@@ -493,21 +493,6 @@ nepali_to_english_dict = {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
 english_to_nepali_dict = {v.lower(): k for k, v in nepali_to_english_dict.items()}
