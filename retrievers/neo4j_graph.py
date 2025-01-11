@@ -3,6 +3,7 @@ from langchain_community.vectorstores.neo4j_vector import Neo4jVector
 import os
 from dotenv import load_dotenv
 from langchain.schema import Document
+from langchain_cohere import CohereRerank
 
 load_dotenv()
 
@@ -81,11 +82,24 @@ def retrieval_from_graph(documents):
 
 def similarity_search(vectorstore, query):
     try:
-        docs_with_score = vectorstore.similarity_search_with_score(query, k=2)
-        for doc, score in docs_with_score:
-            print(f"Document: {doc.page_content}\nScore: {score}")
+        docs_with_score = vectorstore.similarity_search_with_score(query, k=10)
+        documents = [Document(page_content = doc.page_content, metadata = doc.metadata) for doc, _ in docs_with_score]
+        reranker = CohereRerank(model="rerank-english-v2.0")
+        reranked_docs = reranker.rerank(query=query, documents=documents)
+        results = []
+        for doc, reranked_score in zip(reranked_docs, reranker.scores):
+            results.append({
+                "content": doc.page_content,
+                "original_score": doc.metadata.get("score", "N/A"),
+                "rerank_score": reranked_score
+            })
+        for result in results:
+            print(f"Content: {result['content']}\nOriginal Score: {result['original_score']}\nRerank Score: {result['rerank_score']}\n")
+        return results
     except Exception as e:
-        print(f"Error during similarity search: {e}")
+        print(f"Error during similarity search and reranking: {e}")
+        return []
+
 
 def query_similarity_search(query ):
     documents = read_documents(chunked_folder_path)
