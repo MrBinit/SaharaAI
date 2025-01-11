@@ -7,6 +7,8 @@ from langchain_qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import Distance, VectorParams
 from langchain_qdrant import FastEmbedSparse, RetrievalMode
+from langchain_cohere import CohereRerank
+
 
 load_dotenv()
 
@@ -78,7 +80,7 @@ def add_document_to_qdrant(docs, collection_name="History_Nepal"):
     except Exception as e:
         print(f"Error while populating data into Qdrant: {e}")
 
-def retrieve_documents_from_qdrant(query, k=2, collection_name="History_Nepal"):
+def retrieve_documents_from_qdrant(query, k=10, collection_name="History_Nepal"):
     try:
         vector_store = QdrantVectorStore(
             client=client,
@@ -86,11 +88,16 @@ def retrieve_documents_from_qdrant(query, k=2, collection_name="History_Nepal"):
             embedding=embedding_model,
         )
         docs_with_score = vector_store.similarity_search(query, k=k)
+        cohere_rerank = CohereRerank(model="rerank-english-v2.0")
+        documents = [Document(page_content=doc.page_content, metadata=doc.metadata) for doc in docs_with_score]
+        reranked_docs = cohere_rerank.rerank(query=query, documents=documents)
+
         results = []
-        for doc in docs_with_score:
+        for doc, reranked_score in zip(reranked_docs, cohere_rerank.scores):
             result = {
                 "content": doc.page_content,
-                "score": doc.metadata.get("score", "No score available")
+                "original_score": doc.metadata.get("score", "No score available"),
+                "rerank_score" : reranked_score
             }
             results.append(result)
         return results

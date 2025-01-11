@@ -36,21 +36,21 @@ def knowledge_graph(query:str):
 # google wrapper
 search = GoogleSearchAPIWrapper(google_api_key=google_api_key, google_cse_id = google_cse_id, k = 10)
 tools = [
-    Tool(
-        name = "google_search",
-        description= "Search about Nepal's History. If the query is non-Historical tell I don't know and don't search in the Internet",
-        func = search.run,
-        ),
+    # Tool(
+    #     name = "google_search",
+    #     description= "Search about Nepal's History. If the query is non-Historical tell I don't know and don't search in the Internet",
+    #     func = search.run,
+    #     ),
     Tool(
         name = "qdrant_retriever",
         description= "Retrieves relevant historical documents from Qdrant vector store for a given query.",
         func=qdrant_retriever,
     ),
-    Tool(
-        name = "knowledge_graph",
-        description = "Retrieves relevent relationship among entities from the historical document from knowledge graph for a given query",
-        func= knowledge_graph,
-    )
+    # Tool(
+    #     name = "knowledge_graph",
+    #     description = "Retrieves relevent relationship among entities from the historical document from knowledge graph for a given query",
+    #     func= knowledge_graph,
+    # )
 
 ]
 
