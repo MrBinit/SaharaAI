@@ -22,6 +22,8 @@ nepali_to_english_dict = {
     "शाह" : "shah",
     "श्री ५ महाराजाधिराज वीरेन्द्र वीर बिक्रम शाहदेव" : "shree 5 maharaja dhiraj birendra bir bikram shah dev",
     "श्री ५ महाराजाधिराज महेन्द्र वीर बिक्रम शाहदेव" : "shree 5 maharaja dhiraj mahendra bir bikram shah dev",
+    "वीरेन्द्र वीर बिक्रम शाह" : " birendra bir bikram shah",
+    "महेन्द्र वीर बिक्रम शाह" : "mahendra bir bikram shah ",
     "किरात" : "kirat",
     "लिच्छवी" : "licchavi",
     "मल्ल" : "malla",
@@ -488,6 +490,19 @@ nepali_to_english_dict = {
     "बहादुर शाह" : "king bahadur shah",
     "श्री ५ रानी राजेश्वरी" : "shree 5 queen rajeshwari",
     "राजेश्वरी" : "rajeshwari",
+    "०": "0",
+    "१": "1",
+    "२": "2",
+    "३": "3",
+    "४": "4",
+    "५": "5",
+    "६": "6",
+    "७": "7",
+    "८": "8",
+    "९": "9",
+    "कार्की": "karki",
+    "सहारा" : "sahara",
+    "SaharaAI": "saharaai"
 
 
 
