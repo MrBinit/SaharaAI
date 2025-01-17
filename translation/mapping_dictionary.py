@@ -502,7 +502,7 @@ nepali_to_english_dict = {
     "९": "9",
     "कार्की": "karki",
     "सहारा" : "sahara",
-    "SaharaAI": "saharaai"
+    "SaharaAI": "saharaai",
 
 
 

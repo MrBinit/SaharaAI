@@ -2,9 +2,13 @@
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 import os
 import re
+from dotenv import load_dotenv
 
-parsed_document = "/home/binit/HistoryOfNepal/data/parsed_books/parsed_documents.md"
-output_folder = "/home/binit/HistoryOfNepal/data/parsed_chunked"
+load_dotenv()
+
+parsed_document = os.getenv("parsed_document")
+output_folder = os.getenv("output_folder")
+
 
 def load_parsed_document(file_path):
     with open(file_path, 'r') as file:
