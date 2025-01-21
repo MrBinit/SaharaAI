@@ -147,13 +147,11 @@ The History of Nepal Chatbot is an intelligent conversational agent designed to 
 
 ## Future Enhancements
 
-1. **Multilingual Support**:
-   - Include support for Nepali and other regional languages.
-2. **Interactive Visualizations**:
+1. **Interactive Visualizations**:
    - Timelines, maps, and graphs for richer user experiences.
-3. **Voice Integration**:
+2. **Voice Integration**:
    - Enable voice-based queries and responses.
-4. **AI-Driven Insights**:
+3. **AI-Driven Insights**:
    - Predictive analytics and insights about historical trends.
 
 ---
