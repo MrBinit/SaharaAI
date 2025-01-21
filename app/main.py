@@ -9,8 +9,8 @@ from app.crud import create_history,  list_sessions, get_or_create_session
 from translation.translation_model import translate_by_sentence
 import re
 
-app = FastAPI(title="SaharaAI")
 
+app = FastAPI(title="SaharaAI")
 
 class query(BaseModel):
     input: str
@@ -101,6 +101,7 @@ def root():
 @app.get("/sessions/")
 def get_sessions(db: Session = Depends(get_db)):
     return list_sessions(db)
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
