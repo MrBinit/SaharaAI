@@ -4,11 +4,16 @@ import re
 from translation.mapping_dictionary import nepali_to_english_dict, english_to_nepali_dict
 import ctranslate2
 import transformers
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 warnings.filterwarnings("ignore")
+translation_model_path = os.getenv("translation_model_path")
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-translation_model_path = "/app/models/nllb-200-distilled-600M-ct2-int8"
 
 translation_tokenizer = transformers.AutoTokenizer.from_pretrained(translation_model_path)
 translation_model = ctranslate2.Translator(translation_model_path)
@@ -117,6 +122,7 @@ def translate_by_sentence(text, src_lang, tgt_lang):
         for placeholder, mapped_word in entity_mapping.items():
             translated_text = re.sub(rf'\b{placeholder}\b', mapped_word, translated_text)
 
+        translated_text = translated_text.replace("\n", "\\n").replace("\n", "\\n")
         translated_chunks.append(translated_text)
 
     print("All translated chunks:", translated_chunks)  

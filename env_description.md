@@ -39,3 +39,5 @@ COHERE_API_KEY=<YOUR_COHERE_API_KEY>
 # Parsed Document Paths
 parsed_document = "/app/data/parsed_books/parsed_documents.md"
 output_folder = "/app/data/parsed_chunked"
+translation_model_path = "/app/models/nllb-200-distilled-600M-ct2-int8"
+

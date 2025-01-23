@@ -73,12 +73,7 @@ The History of Nepal Chatbot is an intelligent conversational agent designed to 
    ```
 
 2. Create a `.env` file for environment variables. Example:
-   ```env
-   QDRANT_URL=192.168.100.100
-   NEO4J_URI=bolt://localhost:7687
-   POSTGRES_URL=postgresql://user:password@localhost:5432/history_bot
-   GOOGLE_API_KEY=<your_google_api_key>
-   ```
+   - Take reference from env_description which will be required to run this entire project, 
 
 3. Build and start the Docker containers:
    ```bash
@@ -88,6 +83,24 @@ The History of Nepal Chatbot is an intelligent conversational agent designed to 
 4. Access the chatbot service via the designated API endpoint or UI (if available).
 
 ---
+
+### Run the program
+   - Step 1: Parse the document. Use preprocessing/parse.py which will parse the document using llama parse and store it in markdown format
+   - Step 2: Then to extract the document and chunk them use cmd/extraction_script.py which will chunk the parsed document. 
+   - Step 3: To push to the qdrant database and perform embedding and perform hybrid search use cmd/hybrid_search_script.py 
+   - Step 4: To push to the neo4j database and perform embedding and perform retrieveral from graph database use cmd/            neo4j_graph_script.py
+   - Step 5: To run agent use agents/custom_agent.py
+### Technologies used
+
+- **Llama3.2 3B**
+- **langchain agent**
+- **neo4j**
+- **embedding model (mxbai-embed-large)**
+- **sparse embedding (Qdrant/bm25)**
+- **NLLB 600M from ctranslate2** 
+- **rerank cohere**
+
+
 
 ## Usage
 

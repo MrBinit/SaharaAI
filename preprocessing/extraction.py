@@ -2,13 +2,6 @@
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 import os
 import re
-from dotenv import load_dotenv
-
-load_dotenv()
-
-parsed_document = os.getenv("parsed_document")
-output_folder = os.getenv("output_folder")
-
 
 def load_parsed_document(file_path):
     with open(file_path, 'r') as file:
@@ -51,9 +44,3 @@ def saved_chunked_documents(chunked_documents, output_folder):
             f.write(doc.page_content) 
             print(f"Saved {file_name} to {file_path}")
 
-if __name__ == "__main__":
-    content = load_parsed_document(parsed_document)
-    chunk_doc = loading_chunking(content)
-    saved_chunked_documents(chunk_doc, output_folder)
-    print(f"Number of chunks created: {len(chunk_doc)}")
-    print(chunk_doc[0].page_content if chunk_doc else "No chunks created")

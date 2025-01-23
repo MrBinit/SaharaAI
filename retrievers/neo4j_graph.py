@@ -111,9 +111,4 @@ def query_similarity_search(query ):
     result =similarity_search(vectorstore, query)
     return result
 
-if __name__ == "__main__":
-    query = "Who is King Birendra"
-    query_similarity_search(query)
-
-
 

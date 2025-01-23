@@ -12,7 +12,6 @@ from langchain_cohere import CohereRerank
 
 load_dotenv()
 
-chunked_folder_path = os.getenv("CHUNK_FOLDER_PATH")
 qdrant_url = os.getenv("QDRANT_URL")
 ollama_base_url = os.getenv("OLLAMA_BASE_URL")
 
@@ -105,11 +104,3 @@ def retrieve_documents_from_qdrant(query, k=10, collection_name="History_Nepal")
         print(f"Error retrieving documents from Qdrant: {e}")
         return []
 
-if __name__ == "__main__":
-    docs = read_documents(chunked_folder_path)
-    
-    if not docs:
-        print("No documents were loaded. Exiting the process.")
-        exit(1)
-    
-    add_document_to_qdrant(docs)
