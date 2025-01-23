@@ -1,7 +1,7 @@
 # History of Nepal Chatbot
 
 
-![Project Architecture](https://lucid.app/publicSegments/view/fa740e30-d20b-4096-a55f-9a47491ba6bd/image.png)
+![Project Architecture](https://lucid.app/publicSegments/view/d3783105-df34-49e3-9aa0-3117d117b99f/image.jpeg)
 
 ## Overview
 The History of Nepal Chatbot is an intelligent conversational agent designed to provide users with accurate, in-depth, and engaging information about the history of Nepal. It integrates multiple advanced technologies and tools to ensure high-quality responses, leveraging retrieval-augmented generation (RAG) techniques, knowledge graphs, and internet-based searches.
