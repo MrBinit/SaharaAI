@@ -8,9 +8,28 @@ from app.database import SessionLocal, init_db
 from app.crud import create_history,  list_sessions, get_or_create_session
 from translation.translation_model import translate_by_sentence
 import re
+from fastapi.middleware.cors import CORSMiddleware
+
 
 
 app = FastAPI(title="SaharaAI")
+
+
+origins = [
+    "http://localhost",
+    "http://localhost:8080",
+    "http://localhost:5173",
+    "http://localhost:3000",
+]
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class query(BaseModel):
     input: str
