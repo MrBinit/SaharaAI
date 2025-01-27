@@ -88,19 +88,17 @@ def retrieve_documents_from_qdrant(query, k=10, collection_name="History_Nepal")
         )
         docs_with_score = vector_store.similarity_search(query, k=k)
         cohere_rerank = CohereRerank(model="rerank-english-v2.0")
-        documents = [Document(page_content=doc.page_content, metadata=doc.metadata) for doc in docs_with_score]
+        documents = [Document(page_content=docs_with_score["page_content"], metadata=docs_with_score.get("metadata", {})) for doc in docs_with_score]
         reranked_docs = cohere_rerank.rerank(query=query, documents=documents)
 
         results = []
-        for doc, reranked_score in zip(reranked_docs, cohere_rerank.scores):
+        for doc in reranked_docs:
             result = {
                 "content": doc.page_content,
                 "original_score": doc.metadata.get("score", "No score available"),
-                "rerank_score" : reranked_score
             }
             results.append(result)
         return results
     except Exception as e:
         print(f"Error retrieving documents from Qdrant: {e}")
         return []
-
