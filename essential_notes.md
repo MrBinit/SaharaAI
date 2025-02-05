@@ -26,3 +26,5 @@ SHOW INDEXES;
 
  **DROP INDEX** 
 DROP INDEX `index_name`;
+
+sudo systemctl stop ollama
