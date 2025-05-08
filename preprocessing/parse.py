@@ -1,9 +1,9 @@
-# this will parse the documents and store in parsed_documents.md . This is done first. 
+# this will parse the documents and store in parsed_documents.md . This is done first.
 from dotenv import load_dotenv
 from llama_parse import LlamaParse
 from llama_index.core import SimpleDirectoryReader
 from pathlib import Path
-import os 
+import os
 
 load_dotenv()
 api_key_1 = os.getenv("LLAMA_CLOUD_API_KEY")
@@ -13,7 +13,7 @@ parser = LlamaParse(
     result_type = "markdown",
     api_key= api_key_2
 )
-folder_path = "/home/binit/HistoryOfNepal/data/new_books"
+folder_path = "/app/data/new_books"
 file_extractor = {".pdf": parser}
 
 pdf_files = [str(file) for file in Path(folder_path).rglob("*.pdf")]
@@ -24,7 +24,7 @@ if not documents:
     print("No documents were parsed")
 else:
     print(f"Parsed {len(documents)} documents")
-output_folder = "/home/binit/HistoryOfNepal/data/parsed_books/"
+output_folder = "/app/data/parsed_books/"
 os.makedirs(output_folder, exist_ok= True)
 
 concatenated_file_path = os.path.join(output_folder, "parsed_documents.md")

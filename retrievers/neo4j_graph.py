@@ -38,7 +38,7 @@ def retrieval_from_graph(documents):
     except Exception as e:
         print(f"Error initializing the embedding model: {e}")
         return  None
-    
+
     try:
         vectorstore = Neo4jVector.from_existing_index(
             embedding=embedding_model,
@@ -107,8 +107,12 @@ def query_similarity_search(query ):
 
     if not vectorstore:
         print("Failed to create vector store")
-        return 
+        return
     result =similarity_search(vectorstore, query)
     return result
 
+
+if __name__ == "__main__":
+    query = "Who is King Birendra"
+    query_similarity_search(query)
 

@@ -24,7 +24,7 @@ google_cse_id = os.getenv("GOOGLE_CSE_ID")
 
 def graph_transformer_tool(text):
     graph_transformer = LLMGraphTransformer()
-    graph = graph_transformer.transforme(text)
+    graph = graph_transformer.transform(text)
     return graph
 def qdrant_retriever(query:str):
     docs_with_score = retrieve_documents_from_qdrant(query)
@@ -55,9 +55,9 @@ tools = [
 ]
 
 llm = ChatOllama(
-    model = "llama3.2:3b",
-    temperature = 0, 
-    verbose= False, 
+    model = "llama3.2:latest",
+    temperature = 0.7,
+    verbose= False,
     base_url="http://ollama:11434"
 )
 

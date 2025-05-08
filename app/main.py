@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from app.database import SessionLocal, init_db
 from app.crud import create_history,  list_sessions, get_or_create_session
-from translation.translation_model import translate_by_sentence
+from translation.pipeline import run_translation_pipeline
 import re
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -31,9 +31,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+class TranslationRequest(BaseModel):
+    """Model for translation requests. Includes the input text and target language."""
+    text: str
+    language: str
+
+class TranslationResponse(BaseModel):
+    """Model for translation responses. Returns original and translated text."""
+    original_text: str
+    translated_text: str
+    
 class query(BaseModel):
     input: str
     session_id:str= "test-session"
+
+
 
 def get_db():
     db = SessionLocal()
@@ -59,7 +71,7 @@ def ask_question(query: query, db: Session = Depends(get_db)):
         # to identify nepali language
         if re.search(r'[\u0900-\u097F]',normalize_input):
             print("Detected Nepali text. ")
-            translated_text = translate_by_sentence(normalize_input, src_lang = "npi_Deva", tgt_lang = "eng_Latn")
+            translated_text = run_translation_pipeline(normalize_input, src_lang = "npi_Deva", tgt_lang = "eng_Latn")
             print(f"Translated Nepali to English: {translated_text}")
 
             result = agent_with_chat_history.invoke(
@@ -68,10 +80,10 @@ def ask_question(query: query, db: Session = Depends(get_db)):
             )
             if result:
                 print("chatbot response generated successfully.")
-                translated_result = translate_by_sentence(result['output'], src_lang = "eng_Latn", tgt_lang = "npi_Deva")
+                translated_result = run_translation_pipeline(result['output'], src_lang = "eng_Latn", tgt_lang = "npi_Deva")
                 history_entry = create_history(
-                    db, 
-                    query = query.input, 
+                    db,
+                    query = query.input,
                     result= translated_result,
                     session_id= query.session_id
                 )
@@ -79,7 +91,7 @@ def ask_question(query: query, db: Session = Depends(get_db)):
                     "query" : query.input,
                     "result": translated_result,
                     "session_id" : query.session_id,
-                    "timestamp": history_entry.timestamp  
+                    "timestamp": history_entry.timestamp
                 }
             else:
                 print("No result found for query")
@@ -93,8 +105,8 @@ def ask_question(query: query, db: Session = Depends(get_db)):
             if result:
                 print("chatbot response generated successfully.")
                 history_entry = create_history(
-                    db, 
-                    query = query.input, 
+                    db,
+                    query = query.input,
                     result= result['output'],
                     session_id= query.session_id
                 )
@@ -102,16 +114,16 @@ def ask_question(query: query, db: Session = Depends(get_db)):
                     "query" : query.input,
                     "result": result['output'],
                     "session_id" : query.session_id,
-                    "timestamp": history_entry.timestamp  
+                    "timestamp": history_entry.timestamp
                 }
             else:
                 print("No result found for query")
                 raise HTTPException(status_code=500, detail="No result found")
-                
+
     except Exception as e:
         print("Exception occurred: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-    
+
 @app.get("/")
 def root():
     return {"message": "Welcome to Sahara AI!"}
@@ -121,6 +133,45 @@ def root():
 def get_sessions(db: Session = Depends(get_db)):
     return list_sessions(db)
 
+@app.post("/translate", response_model=TranslationResponse)
+async def translate(request: TranslationRequest):
+    """
+    Translates text between English and Nepali using the specified language direction.
+
+    Args:
+        request (TranslationRequest): The request body containing the input text and target language ("nepali" or "english").
+
+    Returns:
+        TranslationResponse: Contains the original input text and its translated version.
+
+    Raises:
+        HTTPException:
+            - 400 if the language provided is invalid.
+            - 500 if translation fails or any unexpected error occurs.
+    """
+
+    try:
+        if request.language.lower() == "nepali":
+            src_lang = "eng_Latn"
+            tgt_lang = "npi_Deva"
+        elif request.language.lower() == "english":
+            src_lang = "npi_Deva"
+            tgt_lang = "eng_Latn"
+        else:
+            raise HTTPException(status_code=400, detail="Invalid Language")
+
+        # Preprocess and translate the text
+        preprocessed_text = request.text.lower()
+        translated_text = run_translation_pipeline(preprocessed_text, src_lang, tgt_lang)
+
+        if translated_text is None:
+            raise HTTPException(status_code=500, detail="Translation failed, received None")
+        return TranslationResponse(
+            original_text=request.text,
+            translated_text=translated_text
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e)) from e
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

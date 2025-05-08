@@ -8,7 +8,7 @@ from qdrant_client import QdrantClient
 from qdrant_client.http.models import Distance, VectorParams
 from langchain_qdrant import FastEmbedSparse, RetrievalMode
 from langchain_cohere import CohereRerank
-
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -54,7 +54,7 @@ def add_document_to_qdrant(docs, collection_name="History_Nepal"):
     try:
         existing_collections = client.get_collections()
         existing_collection_names = [col.name for col in existing_collections.collections]
-        
+
         if collection_name not in existing_collection_names:
             client.create_collection(
                 collection_name=collection_name,
@@ -63,15 +63,15 @@ def add_document_to_qdrant(docs, collection_name="History_Nepal"):
             print(f"Qdrant collection '{collection_name}' created successfully.")
         else:
             print(f"Qdrant collection '{collection_name}' already exists.")
-        
+
         qdrant = QdrantVectorStore.from_documents(
             documents=docs,
             embedding=embedding_model,
-            sparse_embedding=sparse_embedding,  
+            sparse_embedding=sparse_embedding,
             sparse_vector_name="sparse-vector",
-            url=qdrant_url,  
+            url=qdrant_url,
             prefer_grpc=False,
-            force_recreate=True,  
+            force_recreate=True,
             collection_name=collection_name,
             retrieval_mode=RetrievalMode.HYBRID,
         )
@@ -103,3 +103,15 @@ def retrieve_documents_from_qdrant(query, k=10, collection_name="History_Nepal")
     except Exception as e:
         print(f"Error retrieving documents from Qdrant: {e}")
         return []
+
+
+chunked_folder_path = os.getenv("CHUNK_FOLDER_PATH")
+
+if __name__ == "__main__":
+    docs = read_documents(chunked_folder_path)
+
+    if not docs:
+        print("No documents were loaded. Exiting the process.")
+        exit(1)
+
+    add_document_to_qdrant(docs)

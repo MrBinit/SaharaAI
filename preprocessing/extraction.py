@@ -2,6 +2,9 @@
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 import os
 import re
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def load_parsed_document(file_path):
     with open(file_path, 'r') as file:
@@ -17,12 +20,12 @@ def loading_chunking(content):
         text = re.sub(r"https?://[^\s]+(?:\.com|\.org|\.net|\.edu|[a-zA-Z]{2,})", "", text)
         text = re.sub(r"([^\n]*\b(www|downloaded from|download).*?[^\n]*)", "", text, flags=re.IGNORECASE)
         text = re.sub(r"\n+", " ", text)
-        text = re.sub(r"\bpp\. \d+(-\d+)?\b", "", text)   
-        text = re.sub(r"\s*subject to the [^\n]+", "", text)  
-        text = re.sub(r"document \d+", "", text) 
+        text = re.sub(r"\bpp\. \d+(-\d+)?\b", "", text)
+        text = re.sub(r"\s*subject to the [^\n]+", "", text)
+        text = re.sub(r"document \d+", "", text)
         text = re.sub(r"\bDocument \d+\b", "", text)
         text = re.sub(r"[^\w\s.,!?0-9/-]", "", text)
-        text = re.sub(r"\d+\s*-\s*[A-Za-z\s]+(\.{2,})\s*\d*", "", text) 
+        text = re.sub(r"\d+\s*-\s*[A-Za-z\s]+(\.{2,})\s*\d*", "", text)
         text = re.sub(r"\b(BC|AD|BS|c\.)\b", lambda m: m.group(0), text)
 
         return text
@@ -35,12 +38,24 @@ def loading_chunking(content):
 
 def saved_chunked_documents(chunked_documents, output_folder):
     os.makedirs(output_folder, exist_ok=True)
-    
+
     for i, doc in enumerate(chunked_documents):
         file_name = f"chunk_text{i+1}.txt"
         file_path = os.path.join(output_folder, file_name)
-        
+
         with open(file_path, "w") as f:
-            f.write(doc.page_content) 
+            f.write(doc.page_content)
             print(f"Saved {file_name} to {file_path}")
 
+
+
+
+parsed_document = os.getenv("parsed_document")
+output_folder = os.getenv("output_folder")
+
+if __name__ == "__main__":
+    content = load_parsed_document(parsed_document)
+    chunk_doc = loading_chunking(content)
+    saved_chunked_documents(chunk_doc, output_folder)
+    print(f"Number of chunks created: {len(chunk_doc)}")
+    print(chunk_doc[0].page_content if chunk_doc else "No chunks created")
